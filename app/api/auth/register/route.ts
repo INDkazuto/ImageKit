@@ -1,6 +1,7 @@
 import { connectionToDatabase } from "@/lib/db";
 import User from "@/models/User";
 import { error } from "console";
+import next from "next";
 import NextAuth from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -25,9 +26,23 @@ export async function POST(request: NextRequest) {
                               { status: 404 }
                         )
                   }
+
             }
 
-      } catch (error) {
+            await User.create({
+                  email,
+                  password
+            })
+            return NextResponse.json(
+                  {message:"User is registred sucessfully"},
+                  {status: 400}            )
 
+      } catch (error) {
+            console.error("Registration error ", error);
+            
+            await NextResponse.json(
+                  {error: "something went wrong "},
+                  {status: 404}
+            )
       }
 }
